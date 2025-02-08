@@ -1,66 +1,137 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Wallet API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 📌 Overview
+The **Wallet API** is a RESTful service built with **Laravel 11** and **Docker**. It allows users to:
+- Create an account
+- Top-up an account
+- Charge an account
+- Retrieve accounts (paginated)
+- Get account details by ID
 
-## About Laravel
+## 🚀 Technologies Used
+- **Laravel 11** (PHP Framework)
+- **MySQL 8.4** (Database)
+- **Docker & Docker Compose** (Containerization)
+- **NGINX** (Web Server)
+- **PHP 8.2** (FPM)
+- **Postman Collection** (API Testing)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Trying the API
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+You can import the [Postman collection](postman_collection.json) into Postman and start testing the API.
 
-## Learning Laravel
+1. **Open Postman**
+2. **Click `Import`** (top left corner)
+3. **Upload `postman_collection.json`**
+4. **Set the `base_url` variable in Postman:**
+   - If you want to try it quickly without setting it up locally, use the **deployed version**: `http://ec2-50-19-168-107.compute-1.amazonaws.com/`
+   - Otherwise, use the **local URL** obtained after setup: `http://localhost/`
+   - If you have **customized the port**, set it to: `http://localhost:{HOST_WEB_PORT}`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Once the base URL is set, you can start making API requests!
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🔧 Setup Instructions
 
-## Laravel Sponsors
+### ⚙️ Requirements
+- **Docker** with **Docker Compose v2** (Recommended: [Docker Desktop](https://www.docker.com/products/docker-desktop/))
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 1️⃣ Clone the Repository
 
-### Premium Partners
+```sh
+git clone https://github.com/error17191/wallet
+cd wallet
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 2️⃣ Copy Environment File & Customize Ports
 
-## Contributing
+```sh
+cp .env.example .env
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Edit `.env` and update **database credentials** if needed (With docker you can just keep them as they are ):
 
-## Code of Conduct
+```ini
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=${HOST_DB_PORT:-3306}
+DB_DATABASE=wallet_db
+DB_USERNAME=root
+DB_PASSWORD=root_password
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+To avoid port conflicts, you can customize the web and database ports in `.env`:
 
-## Security Vulnerabilities
+```ini
+HOST_WEB_PORT=8080  # Change if port 80 is in use
+HOST_DB_PORT=3307    # Change if port 3306 is in use
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 3️⃣ Install Dependencies & Start Docker Services
 
-## License
+```sh
+docker compose up -d --build
+docker compose exec app composer install
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 4️⃣ Generate Key
+
+```sh
+docker compose exec app php artisan key:generate
+```
+
+### 5️⃣ Run Migrations & Set Permissions
+
+```sh
+docker compose exec app php artisan migrate --force
+
+docker compose exec app chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+docker compose exec app chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+```
+
+---
+
+## ⚠️ Preventing Duplicate Transactions
+
+The application includes a **configuration value** to prevent accidental duplicate transactions. By default, transactions with the same type and amount within a **short time window** (configurable in `.env`) are rejected.
+
+To adjust the allowed time window for duplicate transaction detection, update the following in `.env`:
+
+```ini
+DUPLICATE_TRANSACTION_TIME_WINDOW=30  # Time in seconds
+```
+
+Ensure this key is loaded in `config/wallet.php`:
+
+```php
+return [
+    'duplicate_transaction_time_window' => env('DUPLICATE_TRANSACTION_TIME_WINDOW', 30),
+];
+```
+
+---
+
+## 🛠 Running Tests
+
+```sh
+docker compose exec app php artisan test
+```
+
+---
+
+## 📩 Database Structure
+If you would like to check the database structure in SQL format, you can see it in [database/schema/mysql-schema.sql](database/schema/mysql-schema.sql)
+
+---
+
+## 🔜 Next Steps
+
+### ✅ Authentication
+
+### ✅ CI/CD
+
+---
+
