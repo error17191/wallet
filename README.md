@@ -57,10 +57,10 @@ Edit `.env` and update **database credentials** if needed (With docker you can j
 ```ini
 DB_CONNECTION=mysql
 DB_HOST=db
-DB_PORT=${HOST_DB_PORT:-3306}
+DB_PORT=3306
 DB_DATABASE=wallet_db
 DB_USERNAME=root
-DB_PASSWORD=root_password
+DB_PASSWORD=root
 ```
 
 To avoid port conflicts, you can customize the web and database ports in `.env`:
