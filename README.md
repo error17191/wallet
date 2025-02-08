@@ -86,7 +86,7 @@ docker compose exec app php artisan key:generate
 ### 5️⃣ Run Migrations & Set Permissions
 
 ```sh
-docker compose exec app php artisan migrate --force
+docker compose exec app php artisan migrate
 
 docker compose exec app chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 docker compose exec app chmod -R 775 /var/www/storage /var/www/bootstrap/cache
