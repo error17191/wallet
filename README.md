@@ -123,7 +123,7 @@ docker compose exec app php artisan test
 ---
 
 ## 📩 Database Structure
-If you would like to check the database structure in SQL format, you can see it in [database/schema/mysql-schema.sql](database/schema/mysql-schema.sql)
+If you would like to check the database structure in SQL format, you can see it [here](mysql-schema.sql)
 
 ---
 
